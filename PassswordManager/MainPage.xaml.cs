@@ -1,4 +1,5 @@
 ﻿using Microsoft.Maui.Controls;
+using PassswordManager.Models;
 
 namespace PassswordManager
 {
@@ -12,14 +13,18 @@ namespace PassswordManager
         private async void OnUnlockClicked(object sender, EventArgs e)
         {
             var masterPassword = MasterPasswordEntry.Text;
+
             if (!string.IsNullOrEmpty(masterPassword))
             {
-                await Navigation.PushAsync(new PasswordsPage());
+                var passwords = new List<PasswordItem>();
+
+                await Navigation.PushAsync(new PasswordsPage(passwords));
             }
             else
             {
                 await DisplayAlert("Error", "Please enter the master password.", "OK");
             }
         }
+
     }
 }

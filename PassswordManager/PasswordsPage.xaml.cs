@@ -1,33 +1,31 @@
 ﻿using Microsoft.Maui.Controls;
+using PassswordManager.Models;
 using System.Collections.Generic;
 
 namespace PassswordManager
 {
     public partial class PasswordsPage : ContentPage
     {
-        public PasswordsPage()
+        private List<PasswordItem> _passwords;
+
+        public PasswordsPage(List<PasswordItem> passwords)
         {
             InitializeComponent();
-
-            var passwords = new List<PasswordItem>
-            {
-                new PasswordItem { Name = "Google", Password = "myGooglePassword123" },
-                new PasswordItem { Name = "Facebook", Password = "myFacebookPassword456" },
-                new PasswordItem { Name = "Twitter", Password = "myTwitterPassword789" }
-            };
+            _passwords = passwords;
 
             PasswordsListView.ItemsSource = passwords;
         }
 
         private async void OnAddNewPasswordClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("New Password", "Add password functionality will go here.", "OK");
+            await Navigation.PushAsync(new AddPasswordPage(_passwords));
         }
-    }
 
-    public class PasswordItem
-    {
-        public string Name { get; set; }
-        public string Password { get; set; }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            PasswordsListView.ItemsSource = null;
+            PasswordsListView.ItemsSource = _passwords;
+        }
     }
 }
