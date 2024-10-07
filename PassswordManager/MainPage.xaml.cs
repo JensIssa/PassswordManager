@@ -18,13 +18,14 @@ namespace PassswordManager
             {
                 var passwords = new List<PasswordItem>();
 
-                await Navigation.PushAsync(new PasswordsPage(passwords));
+                await Navigation.PushAsync(new PasswordsPage(passwords, masterPassword));
             }
             else
             {
                 await DisplayAlert("Error", "Please enter the master password.", "OK");
             }
         }
+
 
     }
 }

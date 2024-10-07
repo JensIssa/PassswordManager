@@ -1,18 +1,31 @@
-﻿using System;
-using System.IO;
+﻿using Konscious.Security.Cryptography;
 using System.Security.Cryptography;
 using System.Text;
 
 public static class EncryptionService
 {
-    private static readonly string encryptionKey = "RANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOMRANDOM";
-    public static string Encrypt(string plainText)
+    private static readonly byte[] salt = Encoding.UTF8.GetBytes("some-random-salt");
+
+    private static byte[] DeriveKey(string password, byte[] salt)
+    {
+        using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)))
+        {
+            argon2.Salt = salt;
+            argon2.DegreeOfParallelism = 1;
+            argon2.MemorySize = 19456;
+            argon2.Iterations = 2;
+
+            return argon2.GetBytes(32);
+        }
+    }
+
+    public static string Encrypt(string plainText, string masterPassword)
     {
         using (Aes aesAlg = Aes.Create())
         {
-            var key = Encoding.UTF8.GetBytes(encryptionKey);
+            var key = DeriveKey(masterPassword, salt);
             aesAlg.Key = key;
-            aesAlg.IV = new byte[16]; 
+            aesAlg.IV = new byte[16];
 
             var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
             using (var msEncrypt = new MemoryStream())
@@ -27,11 +40,11 @@ public static class EncryptionService
         }
     }
 
-    public static string Decrypt(string cipherText)
+    public static string Decrypt(string cipherText, string masterPassword)
     {
         using (Aes aesAlg = Aes.Create())
         {
-            var key = Encoding.UTF8.GetBytes(encryptionKey);
+            var key = DeriveKey(masterPassword, salt);
             aesAlg.Key = key;
             aesAlg.IV = new byte[16];
 
