@@ -1,20 +1,18 @@
 ﻿using PassswordManager.Models;
+using PassswordManager.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 
 namespace PassswordManager
 {
     public partial class AddPasswordPage : ContentPage
     {
-        private List<PasswordItem> _passwordList;
+        private string _masterPassword;
 
-        public AddPasswordPage(List<PasswordItem> passwordList)
+        public AddPasswordPage(string masterPassword)
         {
             InitializeComponent();
-            _passwordList = passwordList;
+            _masterPassword = masterPassword;
         }
 
         private async void OnSavePasswordClicked(object sender, EventArgs e)
@@ -28,9 +26,13 @@ namespace PassswordManager
                 {
                     Name = siteName
                 };
-                passwordItem.SetPassword(plainPassword); 
+                passwordItem.SetPassword(plainPassword, _masterPassword);
 
-                _passwordList.Add(passwordItem);
+                using (var db = new PasswordsContext())
+                {
+                    db.PasswordItems.Add(passwordItem);
+                    await db.SaveChangesAsync();
+                }
 
                 await DisplayAlert("Success", "Password saved!", "OK");
                 await Navigation.PopAsync();
@@ -42,4 +44,3 @@ namespace PassswordManager
         }
     }
 }
-

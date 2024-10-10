@@ -1,5 +1,7 @@
 ﻿using Microsoft.Maui.Controls;
-using PassswordManager.Models;
+using System;
+using System.IO;
+using PassswordManager.Services;
 
 namespace PassswordManager
 {
@@ -16,16 +18,23 @@ namespace PassswordManager
 
             if (!string.IsNullOrEmpty(masterPassword))
             {
-                var passwords = new List<PasswordItem>();
+                if (!File.Exists(MasterPasswordService.MasterPasswordFilePath))
+                {
+                    MasterPasswordService.SetMasterPassword(masterPassword);
+                    await DisplayAlert("Success", "Master password set.", "OK");
+                }
+                else if (!MasterPasswordService.VerifyMasterPassword(masterPassword))
+                {
+                    await DisplayAlert("Error", "Incorrect master password.", "OK");
+                    return;
+                }
 
-                await Navigation.PushAsync(new PasswordsPage(passwords, masterPassword));
+                await Navigation.PushAsync(new PasswordsPage(masterPassword));
             }
             else
             {
                 await DisplayAlert("Error", "Please enter the master password.", "OK");
             }
         }
-
-
     }
 }
