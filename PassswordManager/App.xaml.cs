@@ -10,6 +10,11 @@ namespace PassswordManager
         private readonly IPasswordService _passwordService;
         private readonly PasswordsContext _dbContext;
 
+        /// <summary>
+        /// Starts the app and sets up the DB context and password service for the app to use. Also handles the migration and creation of the DB
+        /// </summary>
+        /// <param name="passwordService"></param>
+        /// <param name="passwordsContext"></param>
         public App(IPasswordService passwordService, PasswordsContext passwordsContext)
         {
             InitializeComponent();

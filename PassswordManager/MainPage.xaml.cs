@@ -21,6 +21,11 @@ namespace PassswordManager
             _service = service;
         }
 
+        /// <summary>
+        /// Unlocks the app and navigates to the PasswordsPage if the master password is correct and the file exists
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void OnUnlockClicked(object sender, EventArgs e)
         {
             var masterPassword = MasterPasswordEntry.Text;

@@ -17,6 +17,11 @@ namespace PassswordManager
             _service = service;
         }
 
+        /// <summary>
+        /// Saves the password to the database and encrypts it with the master password provided
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void OnSavePasswordClicked(object sender, EventArgs e)
         {
             var siteName = SiteNameEntry.Text;

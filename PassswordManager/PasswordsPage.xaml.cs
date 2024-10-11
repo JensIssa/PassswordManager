@@ -22,6 +22,10 @@ namespace PassswordManager
             await LoadPasswordsAsync();
         }
 
+        /// <summary>
+        /// Loads the passwords from the database and decrypts them with the master password
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadPasswordsAsync()
         {
             var passwords = await _service.GetPasswords();
@@ -34,11 +38,21 @@ namespace PassswordManager
             PasswordsListView.ItemsSource = passwords;
         }
 
+        /// <summary>
+        /// Navigates to the AddPasswordPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void OnAddNewPasswordClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AddPasswordPage(_masterPassword, _service));
         }
 
+        /// <summary>
+        /// On the eye button clicked, show the password if it's not visible, otherwise hide it
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnEyeButtonClicked(object sender, EventArgs e)
         {
             var button = sender as ImageButton;
@@ -73,7 +87,6 @@ namespace PassswordManager
                             }
                             else
                             {
-                                // Hide the password
                                 entry.Text = "********";
                             }
                         }
@@ -82,6 +95,12 @@ namespace PassswordManager
             }
         }
 
+        /// <summary>
+        /// Gets the parent of the given type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private T GetParent<T>(Element element) where T : Element
         {
             Element parent = element.Parent;

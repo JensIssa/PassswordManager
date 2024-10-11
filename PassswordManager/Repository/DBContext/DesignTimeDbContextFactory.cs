@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace PassswordManager.Repository.DBContext
 {
+    /// <summary>
+    /// Factory for setting up the DB. MAUI complained about the PasswordsContext not having a parameterless constructor
+    /// </summary>
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<PasswordsContext>
     {
        public PasswordsContext CreateDbContext(string[] args)

@@ -32,6 +32,7 @@ namespace PassswordManager
                 );
 
 
+            // Some DI stuff
             builder.Services.AddScoped<DbContext, PasswordsContext>();
 
             builder.Services.AddScoped<IPasswordRepo, PasswordRepo>();

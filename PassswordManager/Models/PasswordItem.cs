@@ -20,8 +20,8 @@ namespace PassswordManager.Models
         [Required]
         public string Salt { get; set; }
 
-        // New properties
         private bool _isPasswordVisible = false;
+
         public bool IsPasswordVisible
         {
             get => _isPasswordVisible;
@@ -36,13 +36,24 @@ namespace PassswordManager.Models
             }
         }
 
+        /// <summary>
+        /// Eye icon for the password visibility
+        /// </summary>
         public string EyeIcon => IsPasswordVisible ? "eye_open_icon.png" : "eye_closed_icon.png";
 
-        // Event for property changes
+
+        /// <summary>
+        /// Event for property changes
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        /// <summary>
+        /// Set the password for the item with the given master password and plain password
+        /// </summary>
+        /// <param name="plainPassword"></param>
+        /// <param name="masterPassword"></param>
         public void SetPassword(string plainPassword, string masterPassword)
         {
             Salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
@@ -50,6 +61,11 @@ namespace PassswordManager.Models
             EncryptedPassword = EncryptionService.Encrypt(plainPassword, masterPassword, saltBytes);
         }
 
+        /// <summary>
+        /// Get the password for the item with the given master password
+        /// </summary>
+        /// <param name="masterPassword"></param>
+        /// <returns></returns>
         public string GetPassword(string masterPassword)
         {
             var saltBytes = Convert.FromBase64String(Salt);

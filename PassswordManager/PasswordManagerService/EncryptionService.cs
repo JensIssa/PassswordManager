@@ -8,6 +8,13 @@ namespace PassswordManager.Services
 {
     public static class EncryptionService
     {
+        /// <summary>
+        /// Encrypts the plain text using key derived from the master password and salt
+        /// </summary>
+        /// <param name="plainText">Plain password</param>
+        /// <param name="masterPassword">master password</param>
+        /// <param name="salt">Randomly generated salt</param>
+        /// <returns></returns>
         public static string Encrypt(string plainText, string masterPassword, byte[] salt)
         {
             using (Aes aesAlg = Aes.Create())
@@ -29,6 +36,13 @@ namespace PassswordManager.Services
             }
         }
 
+        /// <summary>
+        /// Decrypts the cipher text using key derived from the master password and salt
+        /// </summary>
+        /// <param name="cipherText">the text </param>
+        /// <param name="masterPassword">master password</param>
+        /// <param name="salt">randomly generate salt</param>
+        /// <returns></returns>
         public static string Decrypt(string cipherText, string masterPassword, byte[] salt)
         {
             using (Aes aesAlg = Aes.Create())
@@ -48,6 +62,13 @@ namespace PassswordManager.Services
                 }
             }
         }
+
+        /// <summary>
+        /// Derives a key from the master password and salt
+        /// </summary>
+        /// <param name="password">The password</param>
+        /// <param name="salt">The randomly generated salt</param>
+        /// <returns></returns>
 
         private static byte[] DeriveKey(string password, byte[] salt)
         {
