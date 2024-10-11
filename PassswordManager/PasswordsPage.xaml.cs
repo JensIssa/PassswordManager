@@ -1,6 +1,6 @@
 ﻿using PassswordManager.Models;
-using Microsoft.EntityFrameworkCore;
 using PassswordManager.PasswordManagerService.Interfaces;
+using System.Linq;
 
 namespace PassswordManager
 {
@@ -25,6 +25,12 @@ namespace PassswordManager
         private async Task LoadPasswordsAsync()
         {
             var passwords = await _service.GetPasswords();
+
+            foreach (var passwordItem in passwords)
+            {
+                passwordItem.IsPasswordVisible = false;
+            }
+
             PasswordsListView.ItemsSource = passwords;
         }
 
@@ -33,21 +39,62 @@ namespace PassswordManager
             await Navigation.PushAsync(new AddPasswordPage(_masterPassword, _service));
         }
 
-        private void PasswordsListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        private void OnEyeButtonClicked(object sender, EventArgs e)
         {
-            var selectedPasswordItem = e.Item as PasswordItem;
-            if (selectedPasswordItem != null)
+            var button = sender as ImageButton;
+            var passwordItem = button?.BindingContext as PasswordItem;
+
+            if (passwordItem != null)
             {
-                try
+                passwordItem.IsPasswordVisible = !passwordItem.IsPasswordVisible;
+
+                var viewCell = GetParent<ViewCell>(button);
+                if (viewCell != null)
                 {
-                    var decryptedPassword = selectedPasswordItem.GetPassword(_masterPassword);
-                    DisplayAlert("Password", $"Site: {selectedPasswordItem.Name}\nPassword: {decryptedPassword}", "OK");
-                }
-                catch
-                {
-                    DisplayAlert("Error", "Failed to decrypt the password. Master password may be incorrect.", "OK");
+                    var grid = viewCell.View as Grid;
+                    if (grid != null)
+                    {
+                        var entry = grid.Children.OfType<Entry>().FirstOrDefault();
+                        if (entry != null)
+                        {
+                            if (passwordItem.IsPasswordVisible)
+                            {
+                                string decryptedPassword;
+                                try
+                                {
+                                    decryptedPassword = passwordItem.GetPassword(_masterPassword);
+                                }
+                                catch
+                                {
+                                    decryptedPassword = "Error";
+                                }
+
+                                entry.Text = decryptedPassword;
+                            }
+                            else
+                            {
+                                // Hide the password
+                                entry.Text = "********";
+                            }
+                        }
+                    }
                 }
             }
+        }
+
+        private T GetParent<T>(Element element) where T : Element
+        {
+            Element parent = element.Parent;
+
+            while (parent != null)
+            {
+                if (parent is T)
+                {
+                    return (T)parent;
+                }
+                parent = parent.Parent;
+            }
+            return null;
         }
     }
 }
