@@ -38,10 +38,22 @@ Then you see this page:
 
 # Discussion About Security of Your Product
 
+## What Do You Protect Against (Who Are the Threat Actors)
 
+The actors I am protecting against could be the following:
 
-# What Do You Protect Against (Who Are the Threat Actors)
+People who are trying to gain unauthorized access to a device. This Password manager ensures, that even if someone accesses the device, they are not able to retrieve sensitive information like stored passwords, without them knowing the master password.
 
-# What Is Your Security Model (Encryption, Key Handling, etc.)
+## What Is Your Security Model (Encryption, Key Handling, etc.)
 
-# Any Pitfalls or Limitations in Your Solution
+The master password is never stored. Instead, it is hashed using Argon2id with the recommended configuration provided by OWASP: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html. This ensures, that even if the hash file is comprised, it is expensive to derive the original master password.
+
+Passwords stored in the database are encrypted, using a encryption algorithm (in my case, AES). The encryption is derived from the master password, using Argon2id, ensuring that without the master password, the stored passwords cannot be decrypted.
+
+Also, the key for encryption is never stored directly. Instead, it is dynamically generated each time based on the master password entered by the user. This way, even if the database is comproised, the encryption key is never avaiable unless the master password is provided.
+
+## Any Pitfalls or Limitations in Your Solution
+
+The problem with the application is, that if the master password is lost or forgotten, there is no way to secure the encrypted passwords, because the encryption key is directly tied to the master password.
+
+If the file storing the hash or the databse is comprised, threat actors may try to brute force it. This does lay on the user to make a strong master password.
