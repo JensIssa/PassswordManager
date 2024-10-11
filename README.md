@@ -34,6 +34,8 @@ By pressing the icon on the right of the password, one is able to see the actual
 
 ![image](https://github.com/user-attachments/assets/c89ef7b4-f15a-45bc-ab6b-8a748c78d6bc)
 
+I didn't have time to bind the eye icons correctly, so it is just the white box on the right side of the passwords. The pictures are there, but I didn't quite get how MAUI handles the event handling when it is related to icons. 
+
 You are able to create a new password with using the "Add new Password" button.
 
 Then you see this page:
