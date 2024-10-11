@@ -2,14 +2,23 @@
 using System;
 using System.IO;
 using PassswordManager.Services;
+using PassswordManager.PasswordManagerService.Interfaces;
 
 namespace PassswordManager
 {
     public partial class MainPage : ContentPage
     {
+        private IPasswordService _service;
+
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        public MainPage(IPasswordService service)
+        {
+            InitializeComponent();
+            _service = service;
         }
 
         private async void OnUnlockClicked(object sender, EventArgs e)
@@ -29,7 +38,7 @@ namespace PassswordManager
                     return;
                 }
 
-                await Navigation.PushAsync(new PasswordsPage(masterPassword));
+                await Navigation.PushAsync(new PasswordsPage(masterPassword, _service));
             }
             else
             {

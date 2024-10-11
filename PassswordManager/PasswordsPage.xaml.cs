@@ -1,17 +1,19 @@
 ﻿using PassswordManager.Models;
-using PassswordManager.Data;
 using Microsoft.EntityFrameworkCore;
+using PassswordManager.PasswordManagerService.Interfaces;
 
 namespace PassswordManager
 {
     public partial class PasswordsPage : ContentPage
     {
         private string _masterPassword;
+        private IPasswordService _service;
 
-        public PasswordsPage(string masterPassword)
+        public PasswordsPage(string masterPassword, IPasswordService service)
         {
             InitializeComponent();
             _masterPassword = masterPassword;
+            _service = service;
         }
 
         protected override async void OnAppearing()
@@ -22,16 +24,13 @@ namespace PassswordManager
 
         private async Task LoadPasswordsAsync()
         {
-            using (var db = new PasswordsContext())
-            {
-                var passwords = await db.PasswordItems.ToListAsync();
-                PasswordsListView.ItemsSource = passwords;
-            }
+            var passwords = await _service.GetPasswords();
+            PasswordsListView.ItemsSource = passwords;
         }
 
         private async void OnAddNewPasswordClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AddPasswordPage(_masterPassword));
+            await Navigation.PushAsync(new AddPasswordPage(_masterPassword, _service));
         }
 
         private void PasswordsListView_ItemTapped(object sender, ItemTappedEventArgs e)

@@ -1,18 +1,20 @@
 ﻿using PassswordManager.Models;
-using PassswordManager.Data;
 using System;
 using Microsoft.Maui.Controls;
+using PassswordManager.PasswordManagerService.Interfaces;
 
 namespace PassswordManager
 {
     public partial class AddPasswordPage : ContentPage
     {
         private string _masterPassword;
-
-        public AddPasswordPage(string masterPassword)
+        private IPasswordService _service;
+        
+        public AddPasswordPage(string masterPassword, IPasswordService service)
         {
             InitializeComponent();
             _masterPassword = masterPassword;
+            _service = service;
         }
 
         private async void OnSavePasswordClicked(object sender, EventArgs e)
@@ -26,13 +28,8 @@ namespace PassswordManager
                 {
                     Name = siteName
                 };
-                passwordItem.SetPassword(plainPassword, _masterPassword);
 
-                using (var db = new PasswordsContext())
-                {
-                    db.PasswordItems.Add(passwordItem);
-                    await db.SaveChangesAsync();
-                }
+                await _service.AddPassword(siteName, plainPassword, _masterPassword);
 
                 await DisplayAlert("Success", "Password saved!", "OK");
                 await Navigation.PopAsync();

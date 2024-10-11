@@ -7,8 +7,8 @@ namespace PassswordManager.Services
     public static class MasterPasswordService
     {
         public static readonly string MasterPasswordFilePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "master_password.hash");
+            AppDomain.CurrentDomain.BaseDirectory, "master_password.hash");
+
 
         public static void SetMasterPassword(string masterPassword)
         {
