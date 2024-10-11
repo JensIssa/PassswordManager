@@ -12,6 +12,11 @@ This can be done in the "Visual studio Installer".
 
 ![image](https://github.com/user-attachments/assets/abd611c3-9568-4107-b708-c136024b90ad)
 
+One would then be able to start up the application in visual studio. This application is currently only available in windows machine. Remember to choose a windows machine as the startup:
+
+![image](https://github.com/user-attachments/assets/509d3fb9-9e95-473c-91bf-cb494f1bd7fa)
+
+
 
 # Screenshots of the Product
 
